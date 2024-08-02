@@ -1,6 +1,6 @@
 ﻿namespace Bearfood_API.Recipes;
 
-public class Service
+public class Service : IService
 {
     public IEnumerable<Recipe> GetAllRecipe()
     {

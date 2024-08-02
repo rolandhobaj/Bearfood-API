@@ -1,4 +1,4 @@
-using Bearfood_API.Recipes;
+using Bearfood_API;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
-builder.Services.AddScoped<Service>();
+
+Startup.AddServices(builder.Services);
 
 var app = builder.Build();
 
