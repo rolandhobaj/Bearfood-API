@@ -1,0 +1,5 @@
+﻿docker login
+docker tag bearfood-api hobajroland/bearfood-api:latest
+docker push hobajroland/bearfood-api:latest
+
+Start instance @ render.com
