@@ -1,20 +1,15 @@
-﻿namespace Bearfood_API.Recipes;
+﻿using Google.Cloud.Firestore;
 
-public record Recipe
+namespace Bearfood_API.Recipes;
+
+[FirestoreData]
+public class Recipe
 {
-    public Recipe(Guid id, string imageUri, string tags, string title)
-    {
-        Id = id;
-        ImageUri = imageUri;
-        Tags = tags;
-        Title = title;
-    }
+    [FirestoreProperty("id")] public string Id { get; set; } = string.Empty;
 
-    public Guid Id { get; init; }
+    [FirestoreProperty("imageUri")] public string ImageUri { get; set; } = string.Empty;
 
-    public string ImageUri { get; init; }
+    [FirestoreProperty("tags")] public string Tags { get; set; } = string.Empty;
 
-    public string Tags { get; init; }
-
-    public string Title { get; init; }
+    [FirestoreProperty("title")] public string Title { get; set; } = string.Empty;
 }

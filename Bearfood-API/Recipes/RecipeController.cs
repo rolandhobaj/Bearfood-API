@@ -14,8 +14,8 @@ public class RecipeController : ControllerBase
     }
     
     [HttpGet]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
-        return Ok(service.GetAllRecipe());
+        return Ok(await service.GetAllRecipe());
     }
 }
