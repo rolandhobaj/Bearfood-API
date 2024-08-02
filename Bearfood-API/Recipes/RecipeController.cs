@@ -6,10 +6,16 @@ namespace Bearfood_API.Recipes;
 [Route("api/[controller]")]
 public class RecipeController : ControllerBase
 {
+    private readonly Service service;
+
+    public RecipeController(Service service)
+    {
+        this.service = service;
+    }
+    
     [HttpGet]
     public IActionResult Get()
     {
-        var recipe = new { Id = 1, Name = "Leves" };
-        return Ok(recipe);
+        return Ok(service.GetAllRecipe());
     }
 }
