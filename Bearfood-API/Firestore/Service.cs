@@ -24,4 +24,10 @@ public class Service : IService
         var collection = db.Collection("recipesV2");
         return await collection.GetSnapshotAsync();
     }
+    
+    public async Task<QuerySnapshot> GetRecipe(string id)
+    {
+        var query = db.Collection("recipesV2").WhereEqualTo("id", id);
+        return await query.GetSnapshotAsync();
+    }
 }
