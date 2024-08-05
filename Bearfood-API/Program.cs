@@ -1,4 +1,7 @@
 using Bearfood_API;
+using Bearfood_API.Users;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,8 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme);
+builder.Services.AddIdentityCore<User>()
+    .AddEntityFrameworkStores<UserDbContext>()
+    .AddApiEndpoints();
 
-Startup.AddServices(builder.Services);
+builder.Services.AddDbContext<UserDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("Database")));
+
+builder.Services.AddServices();
 
 var app = builder.Build();
 
@@ -17,9 +27,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    
+    app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();
 app.MapControllers();
+app.MapIdentityApi<User>();
 
 app.Run();
