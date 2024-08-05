@@ -11,7 +11,7 @@ services:
       - "1433:1433"
     volumes:
       - mssql-data:/var/opt/mssql
-
+    
   web:
     image: bearfood-api:latest
     container_name: dotnet-mvc
@@ -22,6 +22,6 @@ services:
       - mssql
     ports:
       - "5025:5025"
-
+        
 volumes:
   mssql-data:
