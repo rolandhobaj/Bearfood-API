@@ -22,6 +22,16 @@ builder.Services.AddDbContext<UserDbContext>(o => o.UseSqlServer(builder.Configu
 
 builder.Services.AddServices();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp",
+        b => b
+            .WithOrigins("http://localhost:3000") // Allow requests from this origin
+            .AllowAnyMethod() // Allow any HTTP method
+            .AllowAnyHeader() // Allow any headers
+            .AllowCredentials()); // Allow credentials (cookies, auth headers, etc.)
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -32,6 +42,7 @@ if (app.Environment.IsDevelopment())
     
 }
 app.ApplyMigrations();
+app.UseCors("AllowReactApp");
 app.UseHttpsRedirection();
 app.MapControllers();
 app.MapIdentityApi<User>();
