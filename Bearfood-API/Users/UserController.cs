@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Bearfood_API.Users;
 
@@ -7,10 +8,12 @@ namespace Bearfood_API.Users;
 public class UserController : ControllerBase
 {
     private readonly UserDbContext userDbContext;
-
-    public UserController(UserDbContext userDbContext)
+    private readonly UserManager<User> userManager;
+    
+    public UserController(UserDbContext userDbContext, UserManager<User> userManager)
     {
         this.userDbContext = userDbContext;
+        this.userManager = userManager;
     }
 
     [HttpPost("register")]
@@ -21,16 +24,10 @@ public class UserController : ControllerBase
             return BadRequest();
         }
 
-        var user = new User()
-        {
-            UserName = userRegistrationDto.Username,
-            PasswordHash = userRegistrationDto.Password,
-            FullName = userRegistrationDto.FullName ?? string.Empty,
-        };
+        var user = new User(userRegistrationDto.Username, userRegistrationDto.FullName);
 
-        await userDbContext.AddAsync(user).ConfigureAwait(false);
-        var result = await userDbContext.SaveChangesAsync();
-        return result != 1 ? Problem("Failed to insert new user!") : Ok();
+        var result = await userManager.CreateAsync(user, userRegistrationDto.Password).ConfigureAwait(false);
+        return !result.Succeeded ? Problem("Failed to insert new user!") : Ok();
     }
 
     [HttpGet("fullNames")]
