@@ -2,7 +2,7 @@
 
 namespace Bearfood_API.Users;
 
-public class UserRegistrationDto
+public class RegistrationDto
 {
     public string FullName { get; set; } = string.Empty;
     public string Username { get; set; } = string.Empty;
