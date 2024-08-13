@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bearfood_API.Users;
 
@@ -10,12 +11,14 @@ public class UserController : ControllerBase
     private readonly UserDbContext userDbContext;
     private readonly UserManager<User> userManager;
     private readonly SignInManager<User> signInManager;
-    
-    public UserController(UserDbContext userDbContext, UserManager<User> userManager, SignInManager<User> signInManager)
+    private readonly TokenService tokenService;
+
+    public UserController(UserDbContext userDbContext, UserManager<User> userManager, SignInManager<User> signInManager, TokenService tokenService)
     {
         this.userDbContext = userDbContext;
         this.userManager = userManager;
         this.signInManager = signInManager;
+        this.tokenService = tokenService;
     }
 
     [HttpPost("register")]
@@ -40,9 +43,21 @@ public class UserController : ControllerBase
             return BadRequest();
         }
 
+        var user = await userManager.Users.FirstOrDefaultAsync(x => x.UserName == login.Username.ToLower());
+
+        if (user == null)
+        {
+            return Unauthorized("Invalid username!");
+        }
+        
         var result = await signInManager.PasswordSignInAsync(login.Username, login.Password, isPersistent: true, lockoutOnFailure: false);
         
-        return !result.Succeeded ? Unauthorized() : Ok();
+        return !result.Succeeded ? Unauthorized() : Ok(new
+        {
+            UserName = user.UserName,
+            Email = user.Email,
+            Token = tokenService.CreateToken(user)
+        });
     }
 
     [HttpGet("fullNames")]
