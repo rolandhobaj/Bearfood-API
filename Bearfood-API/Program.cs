@@ -11,12 +11,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddAuthorization();
-builder.Services.AddAuthentication()
-    .AddCookie(IdentityConstants.ApplicationScheme)
-    .AddBearerToken(IdentityConstants.BearerScheme);
-builder.Services.AddIdentityCore<User>()
-    .AddEntityFrameworkStores<UserDbContext>()
-    .AddApiEndpoints();
+builder.Services.AddAuthentication();
+
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<UserDbContext>();
 
 builder.Services.AddDbContext<UserDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -41,10 +39,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     
 }
+app.UseAuthorization();
+app.UseAuthentication();
+
 app.ApplyMigrations();
 app.UseCors("AllowReactApp");
 app.UseHttpsRedirection();
 app.MapControllers();
-app.MapIdentityApi<User>();
 
 app.Run();
