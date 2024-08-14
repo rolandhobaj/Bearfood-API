@@ -55,7 +55,7 @@ public class UserController : ControllerBase
         return !result.Succeeded ? Unauthorized() : Ok(new
         {
             UserName = user.UserName,
-            Email = user.Email,
+            FullName = user.FullName,
             Token = tokenService.CreateToken(user)
         });
     }
